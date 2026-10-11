@@ -8,4 +8,3 @@ Validation: Go unit tests and race checks, vet, fuzz testing, and an actual Bash
 
 Limitations: exact supported phrases rather than unrestricted English; GNU/Linux utilities; Bash Emacs Readline only; no Zsh, Vi mode, mutable config, model, daemon, or network. Custom bindings are replaced. Multiple pasted Enter characters may execute a replacement. Paths and utility versions are not fully validated. The referenced external architecture document was unavailable.
 
-Local release artifacts are prepared. A public GitHub release has not been verified or published.

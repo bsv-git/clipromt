@@ -6,7 +6,7 @@ clipromt runs locally. The binary uses only the Go standard library. It has no A
 
 ## Install
 
-Linux amd64 and arm64 archives are built by `scripts/release.sh`. A GitHub release is not yet published. Use the local artifacts or build from source.
+Linux amd64 and arm64 archives are built by `scripts/release.sh`. Download archives and checksums from [GitHub releases](https://github.com/bsv-git/clipromt/releases). You can also build from source.
 
 For a local amd64 archive (use `arm64` for an ARM machine):
 
