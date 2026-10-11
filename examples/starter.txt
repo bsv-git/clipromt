@@ -1,0 +1,6 @@
+who am i
+show current directory
+find files named "*.txt" in .
+search "error" recursively in .
+show processes
+who am i and then show current directory

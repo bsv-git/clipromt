@@ -6,13 +6,35 @@ clipromt runs locally. The binary uses only the Go standard library. It has no A
 
 ## Install
 
-Linux amd64 and arm64 archives are built by `scripts/release.sh`. Download archives and checksums from [GitHub releases](https://github.com/bsv-git/clipromt/releases). You can also build from source.
+No repository clone, Go compiler, AI setup, or root access is needed. Download and run the installer:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bsv-git/clipromt/main/install.sh -o /tmp/clipromt-install.sh
+bash /tmp/clipromt-install.sh --shell
+```
+
+The installer selects Linux amd64 or arm64, downloads v0.1.0, verifies the selected archive's checksum, and installs to `~/.local/bin`. `--shell` adds Bash initialization to `~/.bashrc` without replacing its existing content. Open a new Bash terminal, or enable it in your current terminal:
+
+```bash
+eval "$(~/.local/bin/clipromt init bash)"
+```
+
+Without curl, use `wget -O /tmp/clipromt-install.sh https://raw.githubusercontent.com/bsv-git/clipromt/main/install.sh`. Omit `--shell` if you only want the binary. The installer downloads files during installation; the installed CLI needs no network. The downloaded installer can be inspected before running it.
+
+Prefer a manual download? Get the archive for your machine and `SHA256SUMS` from [v0.1.0 downloads](https://github.com/bsv-git/clipromt/releases/tag/v0.1.0). GitHub's “Download ZIP” is source code, not the ready-to-run binary. From the folder containing those release files, an offline install is:
+
+```bash
+bash /tmp/clipromt-install.sh --from-dir "$PWD" --shell
+```
+
+Or extract and install manually:
 
 For a local amd64 archive (use `arm64` for an ARM machine):
 
 ```bash
-cd dist
-sha256sum -c SHA256SUMS
+# Run in the folder containing the downloaded release files.
+# Check only the archive you downloaded.
+awk '$2 == "clipromt_0.1.0_linux_amd64.tar.gz"' SHA256SUMS | sha256sum -c -
 mkdir -p /tmp/clipromt-install
 # Extract only after the checksum passes.
 tar -xzf clipromt_0.1.0_linux_amd64.tar.gz -C /tmp/clipromt-install
@@ -35,6 +57,32 @@ export PATH="$HOME/.local/bin:$PATH"
 ```
 
 The installed binary needs no Go or Python at runtime. Bash 4.4+ with Readline, Emacs editing mode, and Linux command-line utilities are required. GNU find, grep and coreutils are the target; process lookup uses procps `pgrep`.
+
+## Test it locally in one minute
+
+The starter catalog is already built into the binary. These commands only print suggestions:
+
+```bash
+~/.local/bin/clipromt catalog
+~/.local/bin/clipromt suggest 'who am i'
+~/.local/bin/clipromt suggest 'find files named "*.txt" in .'
+~/.local/bin/clipromt suggest 'who am i and then show current directory'
+```
+
+Expected results are `whoami`, `find '.' -type f -name '*.txt'`, and `whoami && pwd`. Nothing is executed by `suggest`. A short [starter catalog](examples/starter.txt) is also included in the repo; it is plain English reference data, not a shell script.
+
+After Bash initialization, type `/c who am i` and press Enter once. The line should change to `whoami` without printing your username. Edit it if needed. Press Enter again to run it, or Ctrl-C to cancel. Then try `/c show current directory` or `/c show processes`.
+
+To test find and grep on disposable sample data:
+
+```bash
+mkdir -p /tmp/clipromt-demo
+printf 'hello\nerror: example\n' > /tmp/clipromt-demo/example.txt
+~/.local/bin/clipromt suggest 'find files named "*.txt" in /tmp/clipromt-demo'
+~/.local/bin/clipromt suggest 'grep "error" in /tmp/clipromt-demo/example.txt'
+```
+
+Use the same requests after `/c` to review and manually run the commands in Bash. These are examples of the supported grammar; arbitrary wording may need rephrasing.
 
 ## Set up Bash
 

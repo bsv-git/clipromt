@@ -16,4 +16,5 @@ jobs:
       - run: go test -race ./...
       - run: go build -o bin/clipromt ./cmd/clipromt
       - run: bash tests/bash-integration.sh
+      - run: bash scripts/release.sh && bash tests/install.sh
       - run: go test ./internal/composer -run '^$' -fuzz FuzzSuggest -fuzztime 10s
