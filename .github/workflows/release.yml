@@ -1,0 +1,22 @@
+name: Release
+on:
+  push:
+    tags: ['v0.1.0']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+          cache: false
+      - run: go vet ./... && go test -race ./...
+      - run: go build -o bin/clipromt ./cmd/clipromt && bash tests/bash-integration.sh
+      - run: bash scripts/release.sh
+      - name: Publish verified artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --title 'clipromt v0.1.0' --notes-file docs/RELEASE-v0.1.0.md
