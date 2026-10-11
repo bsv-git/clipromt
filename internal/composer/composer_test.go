@@ -7,7 +7,8 @@ import (
 
 func TestSuggestions(t *testing.T) {
 	cases := map[string]string{
-		"who am i": "whoami", "WHERE AM I": "pwd",
+		`find files named x in "!"`: `find './!' -type f -name 'x'`,
+		"who am i":                  "whoami", "WHERE AM I": "pwd",
 		`find files named "*.txt" in .`:                       `find '.' -type f -name '*.txt'`,
 		`find directories named cache in -root`:               `find './-root' -type d -name 'cache'`,
 		`find files named "*.log" in /tmp containing "error"`: `find '/tmp' -type f -name '*.log' -exec grep -nH -F -- 'error' {} +`,

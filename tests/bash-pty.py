@@ -4,7 +4,7 @@ import os, pty, select, time, tempfile
 from pathlib import Path
 root = Path(__file__).resolve().parents[1]
 
-def run(mode):
+def run(mode, trigger):
     with tempfile.TemporaryDirectory() as d:
         marker = Path(d) / 'destination'
         src = Path(d) / 'source'
@@ -28,7 +28,8 @@ def run(mode):
             read_until(b'TEST> ')
             send(f'export CLIPROMT_BIN="{root}/bin/clipromt"; set -o {mode}; eval "$("{root}/bin/clipromt" init bash)"\n')
             read_until(b'TEST> ')
-            send(f'/c copy "{src}" to "{marker}"\r')
+            prefix = '' if trigger == '\x18\x07' else '/c '
+            send(f'{prefix}copy "{src}" to "{marker}"' + trigger)
             read_until(b'cp -i --')
             time.sleep(.15)
             assert not marker.exists(), 'trigger executed generated command'
@@ -54,6 +55,6 @@ def run(mode):
             try: os.kill(pid, 15)
             except ProcessLookupError: pass
             os.waitpid(pid, 0)
-for mode in ('emacs',):
-    run(mode)
-    print(f'PASS: real Bash {mode}, editable /c, no auto-execution, error, ordinary Enter, disable')
+for trigger in ('\r', '\n', '\x18\x07'):
+    run('emacs', trigger)
+    print(f'PASS: real Bash, trigger {trigger!r}, editable line, no auto-execution, error, normal Enter, disable')
